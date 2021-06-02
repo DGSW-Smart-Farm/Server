@@ -2,4 +2,4 @@
 
 DGSW-Smart-Farm Server
 *************
-기능
+GitBook : https://app.gitbook.com/@leatherback/s/smartfarm-narsha/

@@ -8,4 +8,5 @@ urlpatterns = [
     path('led/', views.led.as_view(), name='index'),
     path('humidity_gnd/', views.humidity_gnd.as_view(), name='index'),
     path('get_home/', views.get_home.as_view(), name='index'),
+    path('control_water/', views.control_water.as_view(), name='index'),
 ]

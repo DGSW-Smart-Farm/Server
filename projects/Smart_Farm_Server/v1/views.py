@@ -104,3 +104,17 @@ class get_home(View):
             }
         }
         return JsonResponse(returnvalue)
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class control_water(View):
+    def post(self, request):
+        if request.META['CONTENT_TYPE'] == "application/json":
+            request = json.loads(request.body)
+            #ledstatus = model(status = request['status'])
+        else:
+            #ledstatus = model(status = request.POST['status'])
+            pass
+
+        #ledstatus.save()
+        return HttpResponse(status = 200)
