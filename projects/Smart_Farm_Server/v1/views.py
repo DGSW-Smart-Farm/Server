@@ -118,3 +118,17 @@ class control_water(View):
 
         #ledstatus.save()
         return HttpResponse(status = 200)
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class control_led(View):
+    def post(self, request):
+        if request.META['CONTENT_TYPE'] == "application/json":
+            request = json.loads(request.body)
+            #ledstatus = model(status = request['status'])
+        else:
+            #ledstatus = model(status = request.POST['status'])
+            pass
+
+        #ledstatus.save()
+        return HttpResponse(status = 200)
