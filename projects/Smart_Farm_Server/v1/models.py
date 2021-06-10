@@ -2,26 +2,34 @@ from django.db import models
 from django.conf import settings
 from django.utils import timezone
 
-class sensor(models.Model):
+class humidity_gnd(models.Model):
     humidity_gnd_status = models.IntegerField()
     humidity_gnd_value = models.IntegerField()
-    humidity_gnd_time = models.DateTimeField(default=timezone.now)
 
-    humidity_status = models.IntegerField()
-    humidity_value = models.IntegerField()
-    humidity_time = models.DateTimeField(default=timezone.now)
+class waterpump(models.Model):
+    time = models.DateTimeField(default=timezone.now)
+    status = models.BooleanField()
 
-    fertilizer_status = models.IntegerField()
-    fertilizer_time = models.DateTimeField(default=timezone.now)
+class humidity(models.Model):
+    status = models.IntegerField()
+    value = models.IntegerField()
+    time = models.DateTimeField(default=timezone.now)
 
-    co2_status = models.IntegerField()
-    co2_value = models.IntegerField()
-    co2_time = models.DateTimeField(default=timezone.now)
+class fertilizer(models.Model):
+    status = models.IntegerField()
+    time = models.DateTimeField(default=timezone.now)
 
-    led_status = models.BooleanField()
-    led_value = models.IntegerField()
-    led_time = models.DateTimeField(default=timezone.now)
+class co2(models.Model):
+    status = models.IntegerField()
+    value = models.IntegerField()
+    time = models.DateTimeField(default=timezone.now)
 
-    temp_status = models.IntegerField()
-    temp_value = models.IntegerField()
-    temp_time = models.DateTimeField(default=timezone.now)
+class led(models.Model):
+    status = models.BooleanField()
+    value = models.IntegerField()
+    time = models.DateTimeField(default=timezone.now)
+
+class temp(models.Model):
+    status = models.IntegerField()
+    value = models.IntegerField()
+    time = models.DateTimeField(default=timezone.now)
