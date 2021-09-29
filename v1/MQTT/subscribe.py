@@ -1,21 +1,26 @@
-# -*- coding:utf-8 -*-
-import paho.mqtt.client as mqtt
+import time
+import paho.mqtt.client as paho
+import json
 
-# 서버로부터 CONNTACK 응답을 받을 때 호출되는 콜백
-def on_connect(client, userdata, flags, rc):
-    print("Connected with result code " + str(rc))
-    client.subscribe("smartfarm/sensor")  # 구독 "smartfarm/sensor"
+broker = '13.125.136.38'
 
-# 서버로부터 publish message를 받을 때 호출되는 콜백
-def on_message(client, userdata, msg):
-    print(msg.topic + " " + str(msg.payload))  # 토픽과 메세지를 출력한다.
+#define callback
+def on_message(client, userdata, message):
+    global recvData
 
-class mqtt_subscribe():
-    def __init__(self):
-        self.client = mqtt.Client()
-        self.client.on_connect = on_connect
-        self.client.on_message = on_message
-        self.client.connect("web.dgsw.kr", 1883)
-        self.client.loop_forever()
+    time.sleep(1)
+    recvData = json.loads(message.payload)
 
+client = paho.Client()
+client.on_message = on_message
 
+print("connecting to broker ", broker)
+client.connect(broker, 1883)
+print("subscribing ")
+client.subscribe("smartfarm/sensor")#subscribe
+client.loop_start() #start loop to process received messages
+time.sleep(1)
+
+def returnData():
+    return recvData
+print(recvData)

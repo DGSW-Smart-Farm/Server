@@ -3,6 +3,8 @@ import json, v1.models, django
 from django import http
 from typing import cast
 
+import paho.mqtt.client as mqtt
+
 from django.shortcuts import render
 from django.views import View
 from django.http import HttpResponse, JsonResponse
@@ -17,6 +19,9 @@ from django.core.serializers import serialize
 from .serializers import *
 import v1.models
 
+from .MQTT import subscribe as sub
+
+value = sub.returnData()
 
 # -1 or 0 or 1  ==  -1 = 낮음(부족), 0 = 적당, 1 = 높음(많음)
 @method_decorator(csrf_exempt, name='dispatch')         # csrf 비활성화
@@ -25,42 +30,20 @@ class get_all_sensor(View):
         returnvalue = {
             "humidity_gnd": {
                 "status": 0,
-                "value": 23,        # Percent
+                "value": value['soil_humidity'],        # Percent
             },
             "humidity": {
                 "status": 0,
-                "value": 84,
-            },
-            "fertilizer": {
-                "status": 0,
+                "value": value['humidity'],
             },
             "co2": {
                 "status": 0,
-                "value": 1400,
-            },
-            "led": {
-                "status": True,
-                "time": 2367,
+                "value": value['air'],
             },
             "temp": {
                 "status": 0,
-                "value": 28,
+                "value": value['temperature'],
             }
-        }
-        return JsonResponse(returnvalue)
-
-@method_decorator(csrf_exempt, name='dispatch')
-class fertilizer(View):
-    def get(self, request):
-        
-        return HttpResponse('NO_DATA', status = 404)
-
-@method_decorator(csrf_exempt, name='dispatch')
-class led(View):
-    def get(self, request):
-        returnvalue = {
-            "status": True,
-            "time": 2367
         }
         return JsonResponse(returnvalue)
 
@@ -69,7 +52,7 @@ class temp(View):
     def get(self, request):
         returnvalue = {
             "status": 0,
-            "time": 28
+            "time": value['temperature']
         }
         return JsonResponse(returnvalue)
 
@@ -78,7 +61,7 @@ class humidity_gnd(View):
     def get(self, request):
         returnvalue = {
             "status": 0,
-            "value": 20
+            "value": value['soil_humidity']
         }
         return JsonResponse(returnvalue)
 
@@ -88,26 +71,19 @@ class get_home(View):
         returnvalue = {
             "humidity_gnd": {
                 "status": 0,
-                "value": 20  # Percent
+                "value": value['soil_humidity'],        # Percent
             },
             "humidity": {
                 "status": 0,
-                "value": 84
-            },
-            "fertilizer": {
-                "status": 0,
+                "value": value['humidity'],
             },
             "co2": {
                 "status": 0,
-                "value": 1400
-            },
-            "led": {
-                "status": True,
-                "time": 2367,
+                "value": value['air'],
             },
             "temp": {
                 "status": 0,
-                "value": 28,
+                "value": value['temperature'],
             }
         }
         return JsonResponse(returnvalue)
@@ -132,17 +108,18 @@ class control_fan(View):
 @method_decorator(csrf_exempt, name='dispatch')
 class control_led(View):
     def post(self, request):
-        try:
-            if request.META['CONTENT_TYPE'] == "application/json":
-                request = json.loads(request.body)
-                ledstatus = request['status']
-            else:
-                ledstatus = request.POST['status']
-            mqtt = mqtt_publish()
-            mqtt.led(ledstatus)
-            return HttpResponse('OK', status = 200)
-        except:
-            return HttpResponse('UNKNOWN SERVER ERROR ACCORDED', status = 500)
+        # try:
+        if request.META['CONTENT_TYPE'] == "application/json":
+            request = json.loads(request.body)
+            ledstatus = request['status']
+        else:
+            ledstatus = request.POST['status']
+        mqtt = mqtt_publish()
+        mqtt.led(ledstatus)
+        print(ledstatus)
+        return HttpResponse('OK', status = 200)
+        # except:
+        #     return HttpResponse('UNKNOWN SERVER ERROR ACCORDED', status = 500)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class control_water(View):
