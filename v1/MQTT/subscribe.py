@@ -2,22 +2,21 @@ import time
 import paho.mqtt.client as paho
 import json
 
-broker = '13.125.136.38'
+broker = '13.209.41.37'
+
+def on_connect(client, userdata, flags, rc):
+    client.subscribe("smartfarm/sensor")#subscribe
 
 #define callback
 def on_message(client, userdata, message):
-    global recvData
+    print(message.topic, message.payload)
+    pass
 
-    recvData = json.loads(message.payload)
-
-def returnData():
-    return recvData
-
-client = paho.Client()
-client.on_message = on_message
-print("connecting to broker ", broker)
-client.connect(broker, 1883)
-print("subscribing ")
-client.subscribe("smartfarm/sensor")#subscribe
-client.loop_start() #start loop to process received messages
-time.sleep(1)
+class mqtt:
+    def __init__(self):
+        self.client = paho.Client()
+        self.client.on_connect = on_connect
+        self.client.on_message = on_message
+    
+        self.client.connect(broker, 1883)
+        print('connect')

@@ -1,14 +1,13 @@
-# -*- coding:utf-8 -*-
 from django.http import response
 import paho.mqtt.client as mqtt
 import json
 
-broker = '13.125.136.38'
+broker = '13.209.41.37'
 
 class mqtt_publish():
     def __init__(self):
         self.mqtt = mqtt.Client("python_hub")   # Mqtt Client 오브젝트 생성
-        self.mqtt.connect('13.125.136.38', 1883)  # MQTT 서버에 연결
+        self.mqtt.connect(broker, 1883)  # MQTT 서버에 연결
         self.mqtt.loop(2)                       # Timeout - 2sec
 
     def led(self, status):
