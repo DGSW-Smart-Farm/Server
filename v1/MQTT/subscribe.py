@@ -55,7 +55,7 @@ class MQTT:
         self.get_data()
 
     def get_data(self):
-        if ( (self.temp == None) & (self.humidity == None) & (self.humidity_gnd == None) & (self.air == None) ):
+        if (self.temp == None) and (self.humidity == None) and (self.humidity_gnd == None) and (self.air == None) and (self.led_status == None) and (self.fan_status):
             returnValue = {
                 'temp': 0,
                 'humidity': 0,

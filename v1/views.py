@@ -35,9 +35,8 @@ sensorValue = {
 @method_decorator(csrf_exempt, name='dispatch')         # csrf 비활성화
 class get_all_sensor(View):
     def get(self, request):
-        
-        if sensorValue['led_status'] == 1 :
-            returnvalue = {
+        if (sensorValue['led_status'] == 1) and (sensorValue['fan_status'] == 1):
+            returnValue = {
                 "humidity_gnd": {
                     "status": 0,
                     "value": sensorValue['humidity_gnd'],        # Percent
@@ -50,17 +49,71 @@ class get_all_sensor(View):
                     "status": 0,
                     "value": sensorValue['air'],
                 },
-                "led": {
-                    "status": True
-                },
                 "temp": {
                     "status": 0,
                     "value": sensorValue['temp'],
+                },
+                "led": {
+                    "status": True
+                },
+                "fan": {
+                    "status": True
                 }
             }
-            return JsonResponse(returnvalue)
-
-        else:
+            return JsonResponse(returnValue)
+        elif (sensorValue['led_status'] == 0) and (sensorValue['fan_status'] == 1):
+            returnValue = {
+                'humidity_gnd': {
+                    'status': 0,
+                    'value': sensorValue['humidity_gnd']
+                },
+                'humidity': {
+                    'status': 0,
+                    'value': sensorValue['humidity']
+                },
+                'co2': {
+                    'status': 0,
+                    'value': sensorValue['air']
+                },
+                'temp': {
+                    'status': 0,
+                    'value': sensorValue['temp']
+                },
+                'led': {
+                    'status': False
+                },
+                'fan': {
+                    'status': True
+                }
+            }
+            return JsonResponse(returnValue)
+        elif (sensorValue['led_status'] == 1) and (sensorValue['fan_status'] == 0):
+            returnValue = {
+                'humidity_gnd': {
+                    'status': 0,
+                    'value': sensorValue['humidity_gnd']
+                },
+                'humidity': {
+                    'status': 0,
+                    'value': sensorValue['humidity']
+                },
+                'co2': {
+                    'status': 0,
+                    'value': sensorValue['air']
+                },
+                'temp': {
+                    'status': 0,
+                    'value': sensorValue['temp']
+                },
+                'led': {
+                    'status': True
+                },
+                'fan': {
+                    'status': False
+                }
+            }
+            return JsonResponse(returnValue)
+        elif (sensorValue['led_status'] == 0) and (sensorValue['fan_status'] == 0):
             returnvalue = {
                 "humidity_gnd": {
                     "status": 0,
@@ -74,12 +127,15 @@ class get_all_sensor(View):
                     "status": 0,
                     "value": sensorValue['air'],
                 },
-                "led": {
-                    "status": False
-                },
                 "temp": {
                     "status": 0,
                     "value": sensorValue['temp'],
+                },
+                "led": {
+                    "status": False
+                },
+                'fan': {
+                    'status': False
                 }
             }
             return JsonResponse(returnvalue)
@@ -110,7 +166,7 @@ class humidity(View):
             "value": sensorValue['humidity'],
         }
         return JsonResponse(returnValue)
-    
+
 @method_decorator(csrf_exempt, name='dispatch')
 class air(View):
     def get(self, request):
@@ -134,7 +190,7 @@ class led(View):
                 "status": False
             }
             return JsonResponse(returnvalue)
-      
+
 @method_decorator(csrf_exempt, name='dispatch')
 class fan(View):
     def get(self, request):
@@ -143,7 +199,6 @@ class fan(View):
                 "status": True
             }
             return JsonResponse(returnValue)
-        
         else:
             returnValue = {
                 "status": False
@@ -177,7 +232,6 @@ class get_home(View):
                 }
             }
             return JsonResponse(returnvalue)
-        
         else:
             returnvalue = {
                 "humidity_gnd": {
@@ -203,7 +257,6 @@ class get_home(View):
             }
             return JsonResponse(returnvalue)
 
-
 @method_decorator(csrf_exempt, name='dispatch')
 class control_fan(View):
     def post(self, request):
@@ -219,7 +272,6 @@ class control_fan(View):
         except:
             return HttpResponse('UNKNOWN SERVER ERROR ACCORDED', status=500)
 
-
 @method_decorator(csrf_exempt, name='dispatch')
 class control_led(View):
     def post(self, request):
@@ -234,18 +286,3 @@ class control_led(View):
             return HttpResponse('OK', status=200)
         except:
             return HttpResponse('UNKNOWN SERVER ERROR ACCORDED', status=500)
-
-@method_decorator(csrf_exempt, name='dispatch')
-class control_water(View):
-    def post(self, request):
-        try:
-            if request.META['CONTENT_TYPE'] == "application/json":
-                request = json.loads(request.body)
-                waterstatus = request['status']
-            else:
-                waterstatus = request.POST['status']
-            mqtt = mqtt_publish()
-            mqtt.water(waterstatus)
-            return HttpResponse('OK', status=200)
-        except:
-            return HttpResponse('UNKOWN SERVER ERROR ACCORDED', status=500)

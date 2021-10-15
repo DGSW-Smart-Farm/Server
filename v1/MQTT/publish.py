@@ -1,4 +1,3 @@
-from django.http import response
 import paho.mqtt.client as mqtt
 import json
 
@@ -7,7 +6,7 @@ broker = '13.209.41.37'
 class mqtt_publish():
     def __init__(self):
         self.mqtt = mqtt.Client("python_hub")   # Mqtt Client 오브젝트 생성
-        self.mqtt.connect(broker, 1883)  # MQTT 서버에 연결
+        self.mqtt.connect(broker, 1883)         # MQTT 서버에 연결
         self.mqtt.loop(2)                       # Timeout - 2sec
 
     def led(self, status):
@@ -30,13 +29,13 @@ class mqtt_publish():
                 "type": "fan",
                 "cmd": "on"
             }
-            mqtt.publish("smartfarm/control", json.dumps(response).encode())
+            self.mqtt.publish("smartfarm/control", json.dumps(response).encode())
         elif status == 'false':
             response = {
                 "type": "fan",
                 "cmd": "off"
             }
-            mqtt.publish("smartfarm/control", json.dumps(response).encode())
+            self.mqtt.publish("smartfarm/control", json.dumps(response).encode())
 
     def water(self, status):
         if status == 'true':
@@ -44,10 +43,10 @@ class mqtt_publish():
                 "type": "water",
                 "cmd": "on"
             }
-            mqtt.pubclish("smartfarm/control", json.dumps(response).encode())
+            self.mqtt.pubclish("smartfarm/control", json.dumps(response).encode())
         elif status == 'false':
             response = {
                 "type": "water",
                 "cmd": "off"
             }
-            mqtt.publish("smartfarm/control", json.dumps(response).encode())
+            self.mqtt.publish("smartfarm/control", json.dumps(response).encode())
