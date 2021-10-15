@@ -1,29 +1,15 @@
-import json, v1.models, django
-
-from django import http
-from typing import cast
-
-import paho.mqtt.client as mqtt
-
-from django.shortcuts import render
 from django.views import View
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt    # csrf 비활성화 라이브러리
 from django.utils.decorators import method_decorator    # csrf 비활성화를 위한 메서드, 클래스 데코레이터
-from django.utils import timezone
 from .MQTT.publish import *
 from .MQTT.subscribe import *
-
-# from django.forms.models import model_to_dict
-from django.core.serializers import serialize
-from .serializers import *
-import v1.models
 
 from .__init__ import recv
 value = recv()
 
 sensorValue = {
-    'humidity': value['humidity_gnd'],
+    'humidity': value['humidity'],
     'humidity_gnd': value['humidity_gnd'],
     'air': value['air'],
     'temp': value['temp'],
@@ -35,110 +21,42 @@ sensorValue = {
 @method_decorator(csrf_exempt, name='dispatch')         # csrf 비활성화
 class get_all_sensor(View):
     def get(self, request):
+        returnValue = {
+            "humidity_gnd": {
+                "status": 0,
+                "value": sensorValue['humidity_gnd'],  # Percent
+            },
+            "humidity": {
+                "status": 0,
+                "value": sensorValue['humidity'],
+            },
+            "co2": {
+                "status": 0,
+                "value": sensorValue['air'],
+            },
+            "temp": {
+                "status": 0,
+                "value": sensorValue['temp'],
+            }
+        }
+
         if (sensorValue['led_status'] == 1) and (sensorValue['fan_status'] == 1):
-            returnValue = {
-                "humidity_gnd": {
-                    "status": 0,
-                    "value": sensorValue['humidity_gnd'],        # Percent
-                },
-                "humidity": {
-                    "status": 0,
-                    "value": sensorValue['humidity'],
-                },
-                "co2": {
-                    "status": 0,
-                    "value": sensorValue['air'],
-                },
-                "temp": {
-                    "status": 0,
-                    "value": sensorValue['temp'],
-                },
-                "led": {
-                    "status": True
-                },
-                "fan": {
-                    "status": True
-                }
-            }
-            return JsonResponse(returnValue)
+            returnValue['led'] = {'status': True}
+            returnValue['fan'] = {'status': True}
+
         elif (sensorValue['led_status'] == 0) and (sensorValue['fan_status'] == 1):
-            returnValue = {
-                'humidity_gnd': {
-                    'status': 0,
-                    'value': sensorValue['humidity_gnd']
-                },
-                'humidity': {
-                    'status': 0,
-                    'value': sensorValue['humidity']
-                },
-                'co2': {
-                    'status': 0,
-                    'value': sensorValue['air']
-                },
-                'temp': {
-                    'status': 0,
-                    'value': sensorValue['temp']
-                },
-                'led': {
-                    'status': False
-                },
-                'fan': {
-                    'status': True
-                }
-            }
-            return JsonResponse(returnValue)
+            returnValue['led'] = {'status': False}
+            returnValue['fan'] = {'status': True}
+
         elif (sensorValue['led_status'] == 1) and (sensorValue['fan_status'] == 0):
-            returnValue = {
-                'humidity_gnd': {
-                    'status': 0,
-                    'value': sensorValue['humidity_gnd']
-                },
-                'humidity': {
-                    'status': 0,
-                    'value': sensorValue['humidity']
-                },
-                'co2': {
-                    'status': 0,
-                    'value': sensorValue['air']
-                },
-                'temp': {
-                    'status': 0,
-                    'value': sensorValue['temp']
-                },
-                'led': {
-                    'status': True
-                },
-                'fan': {
-                    'status': False
-                }
-            }
-            return JsonResponse(returnValue)
+            returnValue['led'] = {'status': True}
+            returnValue['fan'] = {'status': False}
+
         elif (sensorValue['led_status'] == 0) and (sensorValue['fan_status'] == 0):
-            returnvalue = {
-                "humidity_gnd": {
-                    "status": 0,
-                    "value": sensorValue['humidity_gnd'],  # Percent
-                },
-                "humidity": {
-                    "status": 0,
-                    "value": sensorValue['humidity'],
-                },
-                "co2": {
-                    "status": 0,
-                    "value": sensorValue['air'],
-                },
-                "temp": {
-                    "status": 0,
-                    "value": sensorValue['temp'],
-                },
-                "led": {
-                    "status": False
-                },
-                'fan': {
-                    'status': False
-                }
-            }
-            return JsonResponse(returnvalue)
+            returnValue['led'] = {'status': False}
+            returnValue['led'] = {'status': False}
+
+        return JsonResponse(returnValue)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class temp(View):
