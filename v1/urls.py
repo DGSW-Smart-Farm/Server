@@ -6,7 +6,6 @@ urlpatterns = [
     path('get_all_sensor/', views.get_all_sensor.as_view(), name='index'),
     path('humidity/', views.humidity.as_view(), name='index'),
     path('humidity_gnd/', views.humidity_gnd.as_view(), name='index'),
-    path('get_home/', views.get_home.as_view(), name='index'),
     path('temp/', views.temp.as_view(), name='index'),
     path('air/', views.air.as_view(), name='index'),
     path('led/', views.led.as_view(), name='index'),

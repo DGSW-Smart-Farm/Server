@@ -39,7 +39,7 @@ class MQTT:
                 self.air = j['air']
                 self.led_status = j['led_stat']
                 self.fan_status = j['fan_stat']
-                print('this is got : {}', format(j))  # 가져온 값 출력
+                # print('this is got : {}', format(j))  # 가져온 값 출력
             else:
                 print('no data....')
 
@@ -61,8 +61,8 @@ class MQTT:
                 'humidity': 0,
                 'humiditi_gnd': 0,
                 'air': 0,
-                'led_stat': 0,
-                'fan_stat': 0
+                'led_status': 0,
+                'fan_status': 0
             }
             return returnValue
         
@@ -72,7 +72,7 @@ class MQTT:
                 'humidity': self.humidity,
                 'humidity_gnd': self.humidity_gnd,
                 'air': self.air,
-                'led_stat': self.led_status,
-                'fan_stat': self.fan_status
+                'led_status': self.led_status,
+                'fan_status': self.fan_status
             }
             return returnValue
