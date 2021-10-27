@@ -12,21 +12,22 @@ from .__init__ import recv
 class get_all_sensor(View):
     def get(self, request):
         value = recv()
+        print(value)
         returnValue = {
             "humidity_gnd": {
-                "status": 0,
+                "status": value['humidity_gnd_status'],
                 "value": value['humidity_gnd'],  # Percent
             },
             "humidity": {
-                "status": 0,
+                "status": value['humidity_status'],
                 "value": value['humidity'],
             },
             "co2": {
-                "status": 0,
+                "status": value['air_status'],
                 "value": value['air'],
             },
             "temp": {
-                "status": 0,
+                "status": value['temp_status'],
                 "value": value['temp'],
             }
         }
@@ -53,7 +54,7 @@ class temp(View):
     def get(self, request):
         value = recv()
         returnValue = {
-            "status": -1,
+            "status": value['temp_status'],
             "value": value['temp']
         }
         return JsonResponse(returnValue)
@@ -63,7 +64,7 @@ class humidity_gnd(View):
     def get(self, request):
         value = recv()
         returnValue = {
-            "status": 0,
+            "status": value['humidity_gnd_status'],
             "value": value['humidity_gnd']
         }
         return JsonResponse(returnValue)
@@ -73,7 +74,7 @@ class humidity(View):
     def get(self, request):
         value = recv()
         returnValue = {
-            "status": 1,
+            "status": value['humidity_status'],
             "value": value['humidity'],
         }
         return JsonResponse(returnValue)
@@ -83,7 +84,7 @@ class air(View):
     def get(self, request):
         value = recv()
         returnValue = {
-            "status": 1,
+            "status": value['air_status'],
             "value": value['air']
         }
         return JsonResponse(returnValue)

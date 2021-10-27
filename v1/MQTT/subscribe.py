@@ -40,6 +40,7 @@ class MQTT:
                 self.led_status = j['led_stat']
                 self.fan_status = j['fan_stat']
                 # print('this is got : {}', format(j))  # 가져온 값 출력
+                # print(type(self.temp), type(self.humidity), type(self.humidity_gnd), type(self.air))
             else:
                 print('no data....')
 
@@ -75,4 +76,33 @@ class MQTT:
                 'led_status': self.led_status,
                 'fan_status': self.fan_status
             }
+            
+            if self.temp < 15:
+                returnValue['temp_status'] = -1
+            elif (self.temp >= 15) and (self.temp <= 25):
+                returnValue['temp_status'] = 0
+            else:
+                returnValue['temp_status'] = 1
+
+            if self.humidity < 30:
+                returnValue['humidity_status'] = -1
+            elif (self.humidity >= 30) and (self.humidity <= 70):
+                returnValue['humidity_status'] = 0
+            else:
+                returnValue['humidity_status'] = 1
+
+            if self.humidity_gnd < 20:
+                returnValue['humidity_gnd_status'] = -1
+            elif (self.humidity_gnd >= 20) and (self.humidity_gnd < 25):
+                returnValue['humidity_gnd_status'] = 0
+            else:
+                returnValue['humidity_gnd_status'] = 1
+
+            if int(self.air) < 1000:
+                returnValue['air_status'] = -1
+            elif (int(self.air) >= 1000) and (int(self.air) < 5000):
+                returnValue['air_status'] = 0
+            else:
+                returnValue['air_status'] = 1
+
             return returnValue
