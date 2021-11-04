@@ -59,9 +59,13 @@ class MQTT:
         if (self.temp == None) and (self.humidity == None) and (self.humidity_gnd == None) and (self.air == None) and (self.led_status == None) and (self.fan_status):
             returnValue = {
                 'temp': 0,
+                'temp_status': 0,
                 'humidity': 0,
-                'humiditi_gnd': 0,
+                'humidity_status': 0,
+                'humidity_gnd': 0,
+                'humidity_gnd_status': 0,
                 'air': 0,
+                'air_status': 0,
                 'led_status': 0,
                 'fan_status': 0
             }

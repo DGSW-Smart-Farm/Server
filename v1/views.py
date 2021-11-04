@@ -13,40 +13,55 @@ class get_all_sensor(View):
     def get(self, request):
         value = recv()
         print(value)
-        returnValue = {
-            "humidity_gnd": {
-                "status": value['humidity_gnd_status'],
-                "value": value['humidity_gnd'],  # Percent
-            },
-            "humidity": {
-                "status": value['humidity_status'],
-                "value": value['humidity'],
-            },
-            "co2": {
-                "status": value['air_status'],
-                "value": value['air'],
-            },
-            "temp": {
-                "status": value['temp_status'],
-                "value": value['temp'],
+        try:
+            returnValue = {
+                "humidity_gnd": {
+                    "status": value['humidity_gnd_status'],
+                    "value": value['humidity_gnd'],  # Percent
+                },
+                "humidity": {
+                    "status": value['humidity_status'],
+                    "value": value['humidity'],
+                },
+                "co2": {
+                    "status": value['air_status'],
+                    "value": value['air'],
+                },
+                "temp": {
+                    "status": value['temp_status'],
+                    "value": value['temp'],
+                }
             }
-        }
 
-        if (value['led_status'] == 1) and (value['fan_status'] == 1):
-            returnValue['led'] = {'status': True}
-            returnValue['fan'] = {'status': True}
+            if (value['led_status'] == 1) and (value['fan_status'] == 1):
+                returnValue['led'] = {'status': True}
+                returnValue['fan'] = {'status': True}
 
-        elif (value['led_status'] == 0) and (value['fan_status'] == 1):
-            returnValue['led'] = {'status': False}
-            returnValue['fan'] = {'status': True}
+            elif (value['led_status'] == 0) and (value['fan_status'] == 1):
+                returnValue['led'] = {'status': False}
+                returnValue['fan'] = {'status': True}
 
-        elif (value['led_status'] == 1) and (value['fan_status'] == 0):
-            returnValue['led'] = {'status': True}
-            returnValue['fan'] = {'status': False}
+            elif (value['led_status'] == 1) and (value['fan_status'] == 0):
+                returnValue['led'] = {'status': True}
+                returnValue['fan'] = {'status': False}
 
-        elif (value['led_status'] == 0) and (value['fan_status'] == 0):
-            returnValue['led'] = {'status': False}
-            returnValue['fan'] = {'status': False}
+            elif (value['led_status'] == 0) and (value['fan_status'] == 0):
+                returnValue['led'] = {'status': False}
+                returnValue['fan'] = {'status': False}
+
+        except (TypeError, ValueError, KeyError):
+            returnValue = {
+                'temp': 0,
+                'temp_status': 0,
+                'humidity': 0,
+                'humidity_status': 0,
+                'humidity_gnd': 0,
+                'humidity_gnd_status': 0,
+                'air': 0,
+                'air_status': 0,
+                'led_status': 0,
+                'fan_status': 0
+            }
         return JsonResponse(returnValue)
 
 @method_decorator(csrf_exempt, name='dispatch')
