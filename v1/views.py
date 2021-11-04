@@ -51,16 +51,38 @@ class get_all_sensor(View):
 
         except (TypeError, ValueError, KeyError):
             returnValue = {
-                'temp': 0,
-                'temp_status': 0,
-                'humidity': 0,
-                'humidity_status': 0,
-                'humidity_gnd': 0,
-                'humidity_gnd_status': 0,
-                'air': 0,
-                'air_status': 0,
-                'led_status': 0,
-                'fan_status': 0
+                'temp': {
+                    'status': 0,
+                    'value': 0
+                },
+                'humidity': {
+                    'status': 0,
+                    'value': 0
+                },
+                'humidity_gnd': {
+                    'status': 0,
+                    'value': 0
+                },
+                'co2': {
+                    'status': 0,
+                    'value': 0
+                },
+                'led': {
+                    'status': False
+                },
+                'fan': {
+                    'status': False
+                }
+                # 'temp': 0,
+                # 'temp_status': 0,
+                # 'humidity': 0,
+                # 'humidity_status': 0,
+                # 'humidity_gnd': 0,
+                # 'humidity_gnd_status': 0,
+                # 'air': 0,
+                # 'air_status': 0,
+                # 'led_status': 0,
+                # 'fan_status': 0
             }
         return JsonResponse(returnValue)
 
