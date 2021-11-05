@@ -80,40 +80,64 @@ class get_all_sensor(View):
 class temp(View):
     def get(self, request):
         value = recv()
-        returnValue = {
-            "status": value['temp_status'],
-            "value": value['temp']
-        }
+        try:
+            returnValue = {
+                "status": value['temp_status'],
+                "value": value['temp']
+            }
+        except (TypeError, ValueError, KeyError):
+            returnValue = {
+                "status": 0,
+                "value": 0
+            }
         return JsonResponse(returnValue)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class humidity_gnd(View):
     def get(self, request):
         value = recv()
-        returnValue = {
-            "status": value['humidity_gnd_status'],
-            "value": value['humidity_gnd']
-        }
+        try:
+            returnValue = {
+                "status": value['humidity_gnd_status'],
+                "value": value['humidity_gnd']
+            }
+        except (TypeError, ValueError, KeyError):
+            returnValue = {
+                "status": 0,
+                "value": 0
+            }
         return JsonResponse(returnValue)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class humidity(View):
     def get(self, request):
         value = recv()
-        returnValue = {
-            "status": value['humidity_status'],
-            "value": value['humidity'],
-        }
+        try:
+            returnValue = {
+                "status": value['humidity_status'],
+                "value": value['humidity'],
+            }
+        except (TypeError, ValueError, KeyError):
+            returnValue = {
+                "status": 0,
+                "value": 0
+            }
         return JsonResponse(returnValue)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class air(View):
     def get(self, request):
         value = recv()
-        returnValue = {
-            "status": value['air_status'],
-            "value": value['air']
-        }
+        try:
+            returnValue = {
+                "status": value['air_status'],
+                "value": value['air']
+            }
+        except (TypeError, ValueError, KeyError):
+            returnValue = {
+                "status": 0,
+                "value": 0
+            }
         return JsonResponse(returnValue)
 
 @method_decorator(csrf_exempt, name='dispatch')
