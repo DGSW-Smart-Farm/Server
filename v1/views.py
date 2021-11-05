@@ -73,16 +73,6 @@ class get_all_sensor(View):
                 'fan': {
                     'status': False
                 }
-                # 'temp': 0,
-                # 'temp_status': 0,
-                # 'humidity': 0,
-                # 'humidity_status': 0,
-                # 'humidity_gnd': 0,
-                # 'humidity_gnd_status': 0,
-                # 'air': 0,
-                # 'air_status': 0,
-                # 'led_status': 0,
-                # 'fan_status': 0
             }
         return JsonResponse(returnValue)
 
@@ -131,16 +121,18 @@ class led(View):
     def get(self, request):
         value = recv()
         if value['led_status'] == 1:
-            returnvalue = {
+            returnValue = {
                 "status": True
             }
-            return JsonResponse(returnvalue)
-
         elif value['led_status'] == 0:
-            returnvalue = {
+            returnValue = {
                 "status": False
             }
-            return JsonResponse(returnvalue)
+        else:
+            returnValue = {
+                "status": False
+            }
+        return JsonResponse(returnValue)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class fan(View):
@@ -150,12 +142,15 @@ class fan(View):
             returnValue = {
                 "status": True
             }
-            return JsonResponse(returnValue)
         elif value['fan_status'] == 0:
             returnValue = {
                 "status": False
             }
-            return JsonResponse(returnValue)
+        else:
+            returnValue = {
+                "status": False
+            }
+        return JsonResponse(returnValue)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class control_fan(View):
